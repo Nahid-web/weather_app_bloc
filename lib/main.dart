@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:weather_app_bloc/bloc/weather_bloc.dart';
+import 'package:weather_app_bloc/data/data_provider/weather_data_provider.dart';
+import 'package:weather_app_bloc/data/repository/weather_repository.dart';
 import 'package:weather_app_bloc/presentation/screens/weather_screen.dart';
 
 void main() {
@@ -10,11 +14,21 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: "Weather APp",
-      theme: ThemeData.dark(useMaterial3: true),
-      home: const WeatherScreen(),
+    return RepositoryProvider(
+      create: (context) => WeatherRepository(
+        weatherDataProvider: WeatherDataProvider(),
+      ),
+      child: BlocProvider(
+        create: (context) => WeatherBloc(
+          context.read<WeatherRepository>(),
+        ),
+        child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: "Weather APp",
+          theme: ThemeData.dark(useMaterial3: true),
+          home: const WeatherScreen(),
+        ),
+      ),
     );
   }
 }
